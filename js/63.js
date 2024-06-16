@@ -11,11 +11,11 @@ var uniquePathsWithObstacles = function (obstacleGrid) {
     let dp = new Array(m).fill(-1).map(() => new Array(n).fill(-1));
 
     function f(i, j) {
+        if (i < 0 || j < 0 || obstacleGrid[i][j] === 1) return 0;
         if (i === 0 && j === 0 && obstacleGrid[i][j] !== 1) {
             sum += 1;
             return 1;
         }
-        if (i < 0 || j < 0 || obstacleGrid[i][j] === 1) return 0;
         if (dp[i][j] !== -1) {
             return dp[i][j];
         }
