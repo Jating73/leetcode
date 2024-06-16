@@ -3,89 +3,32 @@
  * @return {string[]}
  */
 var commonChars = function (words) {
-    let ansMap = new Map();
+    // Initialize the frequency array with Infinity, representing the minimum frequency of each character
+    const minFreq = Array(26).fill(Infinity);
 
-    for (let i = 0; i < words.length; i++) {
-        let prevWord = words[i], map = new Map();
-        for (let k = 0; k < prevWord.length; k++) {
-            if (map.has(prevWord[k])) {
-                map.set(prevWord[k], map.get(prevWord[k]) + 1);
-            } else {
-                map.set(prevWord[k], 1);
-            }
+    // Iterate over each word in the words array
+    for (let word of words) {
+        // Initialize the current frequency array for the current word
+        const charCount = Array(26).fill(0);
+
+        // Count the occurrences of each character in the current word
+        for (let char of word) {
+            charCount[char.charCodeAt(0) - 'a'.charCodeAt(0)]++;
         }
-        for (let j = i + 1; j < words.length; j++) {
-            let currentWord = words[j], map2 = new Map();
-            for (let k = 0; k < currentWord.length; k++) {
-                if (map2.has(currentWord[k])) {
-                    map2.set(currentWord[k], map2.get(currentWord[k]) + 1);
-                } else {
-                    map2.set(currentWord[k], 1);
-                }
-            }
-            let left = 0;
-            let keys = [...map.keys()], keys2 = [...map2.keys()]
-            let currentMaxLength = keys2.length;
-            if (keys.length < currentMaxLength) {
-                currentMaxLength = keys.length
-            }
-            let currentMap = new Map();
-            while (left < currentMaxLength) {
-                let key = keys[left]
-                if (map2.has(key)) {
-                    currentMap.set(key, Math.min(map.get(key), map2.get(key)))
-                }
-                left++;
-            }
 
-            console.log("Before - ", currentMap, ansMap)
-
-            if (i === 0 && j === 1) {
-                ansMap = currentMap;
-            } else {
-                console.log("Else --")
-                left = 0;
-                keys = [...ansMap.keys()], keys2 = [...currentMap.keys()]
-                currentMaxLength = keys2.length;
-                if (keys.length > currentMaxLength) {
-                    currentMaxLength = keys.length
-                }
-                while (left < currentMaxLength) {
-                    let key = keys[left]
-                    if (ansMap.has(key)) {
-                        ansMap.set(key, Math.min(ansMap.get(key), currentMap.get(key)))
-                    } else {
-                        ansMap.delete(key)
-                    }
-                    left++;
-                }
-
-            }
-
-            console.log("After - ", currentMap, ansMap)
-            console.log("\n")
+        // Update the minimum frequency array
+        for (let i = 0; i < 26; i++) {
+            minFreq[i] = Math.min(minFreq[i], charCount[i]);
         }
     }
 
-    let ans = []
-    for (let [key, value] of ansMap.entries()) {
-        for (let i = 0; i < value; i++) {
-            ans.push(key)
+    // Construct the result array based on the minimum frequency array
+    const result = [];
+    for (let i = 0; i < 26; i++) {
+        while (minFreq[i]-- > 0) {
+            result.push(String.fromCharCode(i + 'a'.charCodeAt(0)));
         }
     }
-    return ans;
+
+    return result;
 };
-
-let words;
-// words = ["bella", "label", "roller"]
-words = ["acabcddd", "bcbdbcbd", "baddbadb", "cbdddcac", "aacbcccd", "ccccddda", "cababaab", "addcaccd"]
-
-console.log(commonChars(words))
-
-// Example 1:
-// Input: words = ["bella","label","roller"]
-// Output: ["e","l","l"]
-
-// Example 2:
-// Input: words = ["cool","lock","cook"]
-// Output: ["c","o"]
