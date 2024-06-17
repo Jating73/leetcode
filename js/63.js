@@ -4,28 +4,24 @@
  */
 var uniquePathsWithObstacles = function (obstacleGrid) {
 
-    if (obstacleGrid.length === 0) return 0;
 
     let m = obstacleGrid.length, n = obstacleGrid[0].length;
-    let sum = 0;
-    let dp = new Array(m).fill(-1).map(() => new Array(n).fill(-1));
+    let dp = new Array(m).fill().map(() => new Array(n).fill(-1));
 
     function f(i, j) {
         if (i < 0 || j < 0 || obstacleGrid[i][j] === 1) return 0;
-        if (i === 0 && j === 0 && obstacleGrid[i][j] !== 1) {
-            sum += 1;
+        if (i === 0 && j === 0) {
             return 1;
         }
+        if (i < 0 || j < 0) return 0;
         if (dp[i][j] !== -1) {
             return dp[i][j];
         }
-        let up = f(i - 1, j);
-        let left = f(i, j - 1);
-        dp[i][j] = up + left;
-        return dp[i][j];
+        const up = f(i - 1, j);
+        const left = f(i, j - 1);
+        return dp[i][j] = up + left;
     }
-    f(m - 1, n - 1)
-    return sum;
+    return f(m - 1, n - 1);
 };
 
 let obstacleGrid;
